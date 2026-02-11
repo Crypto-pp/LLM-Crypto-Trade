@@ -321,5 +321,6 @@ This project **strictly rejects** any use related to virtual currencies, token i
 **No person shall use this project for illegal financial activities related to virtual currencies; violators bear all consequences.**
 
 **Donation Address(TRC20) : THZiJYfHGV27XvMAidYT1nBGB1cSBGLJiq**
+
 <img width="477" height="459" alt="image" src="https://github.com/user-attachments/assets/21f27011-8bc0-456a-9501-987e8e2e2c06" />
 
