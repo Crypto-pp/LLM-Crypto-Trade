@@ -1,4 +1,4 @@
-# Crypto-Trade: Cryptocurrency Automated Analysis System
+# LLM-Crypto-Trade: Cryptocurrency Automated Analysis System
 
 A professional cryptocurrency market data analysis and trading signal generation system with a full-stack architecture, featuring AI-powered analysis, configurable signal monitoring, and a dark-themed trading dashboard.
 
@@ -6,7 +6,7 @@ A professional cryptocurrency market data analysis and trading signal generation
 
 ## Overview
 
-Crypto-Trade is a full-stack automated analysis system for cryptocurrency markets. It provides:
+LLM-Crypto-Trade is a full-stack automated analysis system for cryptocurrency markets. It provides:
 
 - **Real-time Market Data**: Fetch OHLCV candlestick data from exchanges via ccxt
 - **Technical Analysis**: Comprehensive indicator calculations (MA, RSI, MACD, Bollinger Bands, ADX, ATR, etc.)
@@ -64,7 +64,7 @@ The core feature is a configurable signal monitoring system that allows users to
 | Trend Following | MA/EMA crossover with MACD and ADX confirmation |
 | Mean Reversion | Bollinger Bands + RSI overbought/oversold detection |
 | Momentum | Rate of change and momentum-based signal generation |
-| AI Analysis | LLM-powered analysis with structured JSON signal output |
+| AI Analysis | LLM-Crypto-Tradepowered analysis with structured JSON signal output |
 
 ### Notification System
 
@@ -130,7 +130,7 @@ Built on Al Brooks price action theory:
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd Crypto-Trade
+cd LLM-Crypto-Trade
 
 # Start all services (backend + frontend + infrastructure)
 docker-compose up -d
@@ -174,7 +174,7 @@ pnpm dev    # http://localhost:3000
 ## Project Structure
 
 ```
-Crypto-Trade/
+LLM-Crypto-Trade/
 ├── src/                              # Backend source code
 │   ├── api/                          # FastAPI application
 │   │   ├── main.py                   # App entry, lifespan events
@@ -307,7 +307,7 @@ This project is licensed under the MIT License.
 
 ## 1. Project Purpose
 
-This project (Crypto-Trade) is intended solely for **academic research on cryptocurrency-related technologies, AI algorithm demonstration, and open-source technical exchange**. It does not constitute any financial product, investment advice, financial service, or fundraising activity.
+This project (LLM-Crypto-Trade) is intended solely for **academic research on cryptocurrency-related technologies, AI algorithm demonstration, and open-source technical exchange**. It does not constitute any financial product, investment advice, financial service, or fundraising activity.
 
 This project **does not provide support for any virtual currency / cryptocurrency trading, speculation, issuance, or redemption business**. The codebase does not contain any virtual currency wallet, trading interface, or financial functionality.
 
