@@ -1,4 +1,4 @@
-# Crypto-Trade：加密货币自动化分析系统
+# LLM-Crypto-Trade：加密货币自动化分析系统
 
 专业的加密货币市场数据分析与交易信号生成系统，采用全栈架构，集成 AI 智能分析、可配置信号监控和暗色主题交易仪表盘。
 
@@ -6,7 +6,7 @@
 
 ## 项目简介
 
-Crypto-Trade 是一个全栈加密货币自动化分析系统，提供以下核心能力：
+LLM-Crypto-Trade 是一个全栈加密货币自动化分析系统，提供以下核心能力：
 
 - **实时行情数据**：通过 ccxt 从交易所获取 OHLCV K线数据
 - **技术指标分析**：全面的指标计算（MA、RSI、MACD、布林带、ADX、ATR 等）
@@ -130,7 +130,7 @@ Crypto-Trade 是一个全栈加密货币自动化分析系统，提供以下核�
 ```bash
 # 克隆项目
 git clone <repository-url>
-cd Crypto-Trade
+cd LLM-Crypto-Trade
 
 # 启动所有服务（后端 + 前端 + 基础设施）
 docker-compose up -d
@@ -174,7 +174,7 @@ pnpm dev    # 访问 http://localhost:3000
 ## 项目结构
 
 ```
-Crypto-Trade/
+LLM-Crypto-Trade/
 ├── src/                              # 后端源代码
 │   ├── api/                          # FastAPI 应用
 │   │   ├── main.py                   # 应用入口，生命周期事件
@@ -307,7 +307,7 @@ Crypto-Trade/
 
 ## 1. 项目定位
 
-本项目（Crypto-Trade）仅为**加密货币相关技术的学术研究、AI算法演示与开源技术交流**使用，不构成任何金融产品、投资建议、理财服务或募资行为。
+本项目（LLM-Crypto-Trade）仅为**加密货币相关技术的学术研究、AI算法演示与开源技术交流**使用，不构成任何金融产品、投资建议、理财服务或募资行为。
 
 本项目**不面向任何虚拟货币/加密货币相关交易、炒作、发行、兑付等业务提供支持**，代码中不包含任何虚拟货币钱包、交易接口或金融功能。
 
