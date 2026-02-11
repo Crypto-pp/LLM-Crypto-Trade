@@ -1,0 +1,138 @@
+# ==========================================
+# Prometheus Configuration
+# ==========================================
+# Crypto-Trade 监控配置
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  scrape_timeout: 10s
+  external_labels:
+    cluster: 'crypto-trade'
+    environment: 'production'
+
+# Alertmanager配置
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+# 告警规则文件
+rule_files:
+  - '/etc/prometheus/alerts/*.yml'
+
+# 抓取配置
+scrape_configs:
+  # Prometheus自身监控
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+
+  # API服务监控
+  - job_name: 'crypto-trade-api'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['api:8000']
+        labels:
+          service: 'api'
+          component: 'backend'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        regex: '([^:]+)(?::\d+)?'
+        replacement: '$1'
+
+  # 数据采集服务监控
+  - job_name: 'crypto-trade-collector'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['collector:8001']
+        labels:
+          service: 'collector'
+          component: 'worker'
+
+  # 分析服务监控
+  - job_name: 'crypto-trade-analyzer'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['analyzer:8002']
+        labels:
+          service: 'analyzer'
+          component: 'worker'
+
+  # 策略引擎监控
+  - job_name: 'crypto-trade-strategy'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['strategy:8003']
+        labels:
+          service: 'strategy'
+          component: 'worker'
+
+  # Node Exporter - 主机监控
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          service: 'node-exporter'
+          component: 'infrastructure'
+
+  # cAdvisor - 容器监控
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+        labels:
+          service: 'cadvisor'
+          component: 'infrastructure'
+
+  # PostgreSQL监控
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+        labels:
+          service: 'postgresql'
+          component: 'database'
+
+  # Redis监控
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+        labels:
+          service: 'redis'
+          component: 'cache'
+
+  # RabbitMQ监控
+  - job_name: 'rabbitmq'
+    static_configs:
+      - targets: ['rabbitmq:15692']
+        labels:
+          service: 'rabbitmq'
+          component: 'message-queue'
+
+  # Nginx监控（需要nginx-prometheus-exporter）
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx-exporter:9113']
+        labels:
+          service: 'nginx'
+          component: 'load-balancer'
+
+# 远程写入配置（可选 - 用于长期存储）
+# remote_write:
+#   - url: "http://thanos-receive:19291/api/v1/receive"
+#     queue_config:
+#       capacity: 10000
+#       max_shards: 50
+#       min_shards: 1
+#       max_samples_per_send: 5000
+#       batch_send_deadline: 5s
+#       min_backoff: 30ms
+#       max_backoff: 100ms
+
+# 远程读取配置（可选）
+# remote_read:
+#   - url: "http://thanos-query:19192/api/v1/read"
+#     read_recent: true

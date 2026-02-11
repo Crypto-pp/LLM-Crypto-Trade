@@ -1,0 +1,28 @@
+# Crypto-Trade 开发环境依赖
+# 包含生产环境依赖 + 开发工具
+
+-r requirements.txt
+
+# 测试框架
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+pytest-mock==3.12.0
+
+# 代码质量
+black==23.12.1
+flake8==7.0.0
+isort==5.13.2
+mypy==1.8.0
+
+# 类型检查
+types-redis==4.6.0.20240106
+types-requests==2.31.0.20240106
+
+# 文档生成
+sphinx==7.2.6
+sphinx-rtd-theme==2.0.0
+
+# 开发工具
+ipython==8.19.0
+jupyter==1.0.0

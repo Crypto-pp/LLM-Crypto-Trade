@@ -1,0 +1,134 @@
+version: '3.8'
+
+services:
+  # TimescaleDB数据库
+  timescaledb:
+    image: timescale/timescaledb:latest-pg14
+    container_name: crypto-timescaledb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: crypto_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+    networks:
+      - crypto-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis缓存
+  redis:
+    image: redis:7-alpine
+    container_name: crypto-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - crypto-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # RabbitMQ消息队列
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: crypto-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - crypto-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 后端API服务
+  app:
+    build: .
+    container_name: crypto-app
+    environment:
+      - DB_HOST=timescaledb
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_DATABASE=crypto_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - LOG_LEVEL=INFO
+      - SYSTEM_ENVIRONMENT=production
+      - AI_DEFAULT_PROVIDER=${AI_DEFAULT_PROVIDER:-deepseek}
+      - AI_DEEPSEEK_API_KEY=${AI_DEEPSEEK_API_KEY:-}
+      - AI_DEEPSEEK_BASE_URL=${AI_DEEPSEEK_BASE_URL:-https://api.deepseek.com}
+      - AI_DEEPSEEK_MODEL=${AI_DEEPSEEK_MODEL:-deepseek-chat}
+      - AI_GEMINI_API_KEY=${AI_GEMINI_API_KEY:-}
+      - AI_GEMINI_MODEL=${AI_GEMINI_MODEL:-gemini-2.0-flash}
+      - AI_OPENAI_API_KEY=${AI_OPENAI_API_KEY:-}
+      - AI_OPENAI_BASE_URL=${AI_OPENAI_BASE_URL:-https://api.openai.com/v1}
+      - AI_OPENAI_MODEL=${AI_OPENAI_MODEL:-gpt-4o}
+      - AI_TEMPERATURE=${AI_TEMPERATURE:-0.3}
+      - AI_MAX_TOKENS=${AI_MAX_TOKENS:-4096}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - crypto-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # 前端Web服务
+  frontend:
+    build: ./frontend
+    container_name: crypto-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      app:
+        condition: service_healthy
+    networks:
+      - crypto-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  timescale_data:
+  redis_data:
+  rabbitmq_data:
+
+networks:
+  crypto-network:
+    driver: bridge

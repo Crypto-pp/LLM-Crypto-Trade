@@ -1,0 +1,25 @@
+groups:
+  - name: business_alerts
+    interval: 60s
+    rules:
+      # 数据采集延迟
+      - alert: DataCollectionDelay
+        expr: data_freshness_seconds > 300
+        for: 5m
+        labels:
+          severity: warning
+          category: business
+        annotations:
+          summary: "Data collection delay for {{ $labels.symbol }}"
+          description: "Data is {{ $value }}s old (threshold: 300s)"
+
+      # 数据采集失败
+      - alert: DataCollectionFailure
+        expr: rate(data_collection_failure_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          category: business
+        annotations:
+          summary: "High data collection failure rate"
+          description: "Failure rate is {{ $value }} errors/s"

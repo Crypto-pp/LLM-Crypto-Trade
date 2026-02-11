@@ -1,0 +1,36 @@
+groups:
+  - name: application_alerts
+    interval: 30s
+    rules:
+      # API错误率
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          category: application
+        annotations:
+          summary: "High error rate on {{ $labels.endpoint }}"
+          description: "Error rate is {{ $value | humanizePercentage }} (threshold: 5%)"
+
+      # API响应时间
+      - alert: SlowAPIResponse
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+          category: application
+        annotations:
+          summary: "Slow API response on {{ $labels.endpoint }}"
+          description: "P95 latency is {{ $value }}s (threshold: 2s)"
+
+      # 服务不可用
+      - alert: ServiceDown
+        expr: up{job="crypto-trade-api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: application
+        annotations:
+          summary: "Service {{ $labels.job }} is down"
+          description: "Service has been down for more than 1 minute"
